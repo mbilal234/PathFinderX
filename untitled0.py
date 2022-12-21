@@ -1,5 +1,4 @@
 
-
 import random
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -14,7 +13,7 @@ positions = [(random.uniform(0, 100), random.uniform(0, 100)) for _ in range(num
 # Create a graph with 100 nodes
 G = nx.Graph()
 G.add_nodes_from(range(num_nodes))
-plt.show(G)
+
 # Assign random values between 1 and 15 to each link
 
 
@@ -22,48 +21,42 @@ plt.show(G)
 neighbors = list(G.nodes())
 print(neighbors)
 for i in range(num_nodes):
-    count = 5;
-    if (i == 0) or (i == num_nodes-1):
-        count = 3
-    try:
-        nextList = random.sample(neighbors, 5)
+ 
+    nextList = random.sample(neighbors, 5)
    
-    
-    except:
-        pass
-    while count>0:
-        G.add_edge(i, random.randint(1,num_nodes),weight = random.randint(1,15))
-        count = count-1
+    """   for i in nextList:
+        if i in neighbors:
+            neighbors.remove(i)      """  
+    for j in neighbors:
+        G.add_edge(i, j,weight = random.randint(1,15))
 
 
 # Select the source and destination nodes, ensuring that the source is at least 70 nodes away from the destination
 source = 0
-"""while True:
+while True:
     destination = random.randint(0, num_nodes - 1)
-    if source != destination and nx.shortest_path_length(G,source,destination)>7:
-        break"""
-
+    if source != destination and nx.shortest_path_length(G,source,destination)>70:
+        break
 # Calculate the total number of paths from the source to the destination
-shortest_path = nx.single_source_shortest_path(G,source)
+shortest_path = nx.shortest_path(G,source,destination)
 print(f"The shortest path is: {shortest_path}")
-#paths = nx.all_simple_paths(G, source, destination)
-#print(f'Total number of paths: {len(list(paths))}')
+paths = nx.all_simple_paths(G, source, destination)
+print(f'Total number of paths: {len(list(paths))}')
 
 # Select the optimal path by considering delay as a metric
 min_delay = float('inf')
 optimal_path = None
-"""for path in shortest_path:
+for path in paths:
     delay = 0
     for i in range(len(path) - 1):
         delay += G[path[i]][path[i + 1]]['weight']
     if delay < min_delay:
         min_delay = delay
         optimal_path = path
-print(f'Optimal path: {optimal_path}')"""
-
+print(f'Optimal path: {optimal_path}')
 
 # Calculate the number of hops for the optimal path
-num_hops = nx.single_source_shortest_path_length(G, source)
+num_hops = nx.shortest_path_length(G, source, destination)
 print(f'Number of hops: {num_hops}')
 
 # Transmit 5 packets of equal size from the source to the destination and calculate the average delay and the overhead of the network
