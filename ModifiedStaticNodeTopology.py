@@ -45,15 +45,6 @@ print(f"The shortest path is: {shortest_path}")
 # Select the optimal path by considering delay as a metric
 min_delay = 0
 optimal_path = None
-"""for path in shortest_path:
-    delay = 0
-    for i in range(len(path) - 1):
-        delay += G[path[i]][path[i + 1]]['weight']
-    if delay < min_delay:
-        min_delay = delay
-        optimal_path = path
-print(f'Optimal path: {optimal_path}')"""
-
 
 # Calculate the number of hops for the optimal path
 num_hops = nx.shortest_path_length(G, source,destination)
