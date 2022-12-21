@@ -7,7 +7,6 @@ Created on Wed Dec 21 21:52:43 2022
 
 import networkx as nx
 import random
-
 # Create an empty graph
 G = nx.Graph()
 
@@ -44,7 +43,7 @@ print(f"The shortest path is: {shortest_path}")
 #print(f'Total number of paths: {len(list(paths))}')
 
 # Select the optimal path by considering delay as a metric
-min_delay = float('inf')
+min_delay = 0
 optimal_path = None
 """for path in shortest_path:
     delay = 0
@@ -57,16 +56,17 @@ print(f'Optimal path: {optimal_path}')"""
 
 
 # Calculate the number of hops for the optimal path
-num_hops = nx.single_source_shortest_path_length(G, source)
+num_hops = nx.shortest_path_length(G, source,destination)
 print(f'Number of hops: {num_hops}')
 
 # Transmit 5 packets of equal size from the source to the destination and calculate the average delay and the overhead of the network
-packet_size = 1000
-num_packets = 5
-total_delay = 0
-for i in range(num_packets):
-    total_delay += min_delay
-overhead = (num_packets * packet_size) / (num_packets * packet_size + total_delay)
-average_delay = total_delay / num_packets
-print(f'Average delay: {average_delay}')
-print(f'Overhead: {overhead}')
+for j in range(5):
+    min_delay = 0
+    for i in range(num_hops): 
+        try:
+            d = G.get_edge_data(shortest_path[i+1],shortest_path[i+2])
+            min_delay+=d.get('weight')
+        except:
+            pass
+
+    print("The delay from source to destination is: ",min_delay, " ms")
