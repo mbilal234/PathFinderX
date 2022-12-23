@@ -61,9 +61,9 @@ for i in range(20):
         G.add_node(i)
 
     # Add edges from the source vertex to the intermediate vertices
-    G.add_edge(1, 2, distance=random.uniform(1, 15), speed=SpeedList[1])
-    G.add_edge(1, 3, distance=random.uniform(1, 15), speed=SpeedList[2])
-    G.add_edge(1, 4, distance=random.uniform(1, 15), speed=SpeedList[3])
+    G.add_edge(1, 2, distance=random.uniform(1, 15), speed=SpeedList[2])
+    G.add_edge(1, 3, distance=random.uniform(1, 15), speed=SpeedList[3])
+    G.add_edge(1, 4, distance=random.uniform(1, 15), speed=SpeedList[4])
 
     # Add edges from the intermediate vertices to the destination vertex
     G.add_edge(97, 100, distance=random.uniform(1, 15), speed=SpeedList[96])
@@ -74,15 +74,15 @@ for i in range(20):
 
         for j in range(1, 6):
             if i < 50:
-                random_neighbor = random.randint(i, i+j)
+                random_neighbor = random.randint(i+1, i+j)
                 if G.degree(random_neighbor) < 5 and G.degree(i) < 5:
 
                     G.add_edge(i, random_neighbor, distance=random.uniform(1, 15),
                                speed=SpeedList[i])
             if i >= 50:
-                random_neighbor = random.randint(i-j, i)
+                random_neighbor = random.randint(i-j, i-1)
                 if G.degree(random_neighbor) < 5 and G.degree(i) < 5:
-                    G.add_edge(i, random.randint(i-j, i), distance=random.uniform(1, 15),
+                    G.add_edge(i, random_neighbor, distance=random.uniform(1, 15),
                                speed=SpeedList[i])
     G.remove_edges_from(nx.selfloop_edges(G))
     source = 1
