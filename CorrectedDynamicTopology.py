@@ -78,12 +78,12 @@ for i in range(20):
                 if G.degree(random_neighbor) < 5 and G.degree(i) < 5:
 
                     G.add_edge(i, random_neighbor, distance=random.uniform(1, 15),
-                               speed=SpeedList[i])
+                               speed=SpeedList[random_neighbor])
             if i >= 50:
                 random_neighbor = random.randint(i-j, i-1)
                 if G.degree(random_neighbor) < 5 and G.degree(i) < 5:
                     G.add_edge(i, random_neighbor, distance=random.uniform(1, 15),
-                               speed=SpeedList[i])
+                               speed=SpeedList[random_neighbor])
     G.remove_edges_from(nx.selfloop_edges(G))
     source = 1
     destination = 100
