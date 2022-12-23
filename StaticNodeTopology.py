@@ -27,8 +27,6 @@ for i in range(num_nodes):
         count = 3
     try:
         nextList = random.sample(neighbors, 5)
-   
-    
     except:
         pass
     while count>0:
