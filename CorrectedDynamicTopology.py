@@ -64,9 +64,9 @@ for i in range(20):
         G.add_node(i)
     print("Adding edges from source to intermediate nodes")
     # Add edges from the source vertex to the intermediate vertices
-    G.add_edge(1, 2, distance=random.uniform(1, 15), speed=SpeedList[1])
-    G.add_edge(1, 3, distance=random.uniform(1, 15), speed=SpeedList[2])
-    G.add_edge(1, 4, distance=random.uniform(1, 15), speed=SpeedList[3])
+    G.add_edge(1, 2, distance=random.uniform(1, 15), speed=SpeedList[0])
+    G.add_edge(1, 3, distance=random.uniform(1, 15), speed=SpeedList[1])
+    G.add_edge(1, 4, distance=random.uniform(1, 15), speed=SpeedList[2])
     print("Adding edges from intermediate to destination nodes")
     # Add edges from the intermediate vertices to the destination vertex
     G.add_edge(97, 100, distance=random.uniform(1, 15), speed=SpeedList[96])
