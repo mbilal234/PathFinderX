@@ -15,8 +15,7 @@ from matplotlib import pylab
 pos = {}
 
 for i in range(1, 101):
-    pos[i] = (random.randint(99999999, 100000000000000),
-              random.randint(999999999, 1000000000000))
+    pos[i] = (random.randint(0, 1000), random.randint(0, 1000))
 
 
 def save_graph(graph, file_name):
@@ -53,39 +52,44 @@ for i in range(20):
     # Create an empty graph
     G = nx.Graph()
 
-    print("Adding source nodes")
     # Add the source vertex and destination vertex
     G.add_node(1)
     G.add_node(100)
 
-    print("Adding intermediate nodes")
     # Add the intermediate vertices
     for i in range(2, 100):
         G.add_node(i)
-    print("Adding edges from source to intermediate nodes")
+
     # Add edges from the source vertex to the intermediate vertices
-    G.add_edge(1, 2, distance=random.uniform(1, 15), speed=SpeedList[0])
-    G.add_edge(1, 3, distance=random.uniform(1, 15), speed=SpeedList[1])
-    G.add_edge(1, 4, distance=random.uniform(1, 15), speed=SpeedList[2])
-    print("Adding edges from intermediate to destination nodes")
+    G.add_edge(1, 2, distance=random.uniform(1, 15), speed=SpeedList[1])
+    G.add_edge(1, 3, distance=random.uniform(1, 15), speed=SpeedList[2])
+    G.add_edge(1, 4, distance=random.uniform(1, 15), speed=SpeedList[3])
+
     # Add edges from the intermediate vertices to the destination vertex
     G.add_edge(97, 100, distance=random.uniform(1, 15), speed=SpeedList[96])
     G.add_edge(98, 100, distance=random.uniform(1, 15), speed=SpeedList[97])
     G.add_edge(99, 100, distance=random.uniform(1, 15), speed=SpeedList[98])
 
-    print("Adding edges between intermediate nodes")
     for i in range(2, 100):
+
         for j in range(1, 6):
             if i < 50:
-                G.add_edge(i, i+j, distance=random.uniform(1, 15),
-                           speed=SpeedList[i+j-1])
+                random_neighbor = random.randint(i, i+j)
+                if G.degree(random_neighbor) < 5 and G.degree(i) < 5:
+
+                    G.add_edge(i, random_neighbor, distance=random.uniform(1, 15),
+                               speed=SpeedList[i])
             if i >= 50:
-                G.add_edge(i, i-j, distance=random.uniform(1, 15),
-                           speed=SpeedList[i-j-1])
+                random_neighbor = random.randint(i-j, i)
+                if G.degree(random_neighbor) < 5 and G.degree(i) < 5:
+                    G.add_edge(i, random.randint(i-j, i), distance=random.uniform(1, 15),
+                               speed=SpeedList[i])
+    G.remove_edges_from(nx.selfloop_edges(G))
     source = 1
     destination = 100
+
     print("Calculating shortest path")
-    for i in range(1):
+    for i in range(5):
         # Calculate the total number of paths from the source to the destination
         try:
             shortest_path = nx.shortest_path(G, source, destination)
@@ -93,7 +97,7 @@ for i in range(20):
         except:
             print("No path")
 
-    # Select the optimal path
+        # Select the optimal path
         min_delay = 0
         optimal_path = None
         try:
@@ -116,11 +120,12 @@ for i in range(20):
         except:
             print("Connection fails")
 
-        nx.draw(G, pos)
-        nx.draw_networkx_edges(G, pos, edgelist=list(
-            zip(shortest_path, shortest_path[1:])), edge_color='r', width=1)
 
-        plt.show()
+nx.draw(G, pos)
+nx.draw_networkx_edges(G, pos, edgelist=list(
+    zip(shortest_path, shortest_path[1:])), edge_color='r', width=1)
+
+plt.show()
 save_graph(G, "my_graph.svg")
 
 # Copy code
