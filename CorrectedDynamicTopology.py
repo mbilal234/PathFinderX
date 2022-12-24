@@ -13,21 +13,36 @@ from matplotlib import pylab
 
 
 pos = {}
-
+labels = {1:"Source",100:"Destination"}
+for i in range(2,99):
+    labels[i] = str(i)
 for i in range(1, 101):
     pos[i] = (random.randint(0, 1000), random.randint(0, 1000))
 
+def edge_label_maker(G):
+    edge_labels = dict()
+    eno=0
+    for i in range(100):
+        for j in range(100):
+            try:
+                eData=G.get_edge_data(i,j)
+                edge_labels[(list(G.edges)[eno])] = round(eData["distance"]/eData["speed"],2)
+                eno = eno+1
+            except:
+                pass
+    return edge_labels
 
-def save_graph(graph, file_name):
+def save_graph(graph, file_name,pos,shortest_path,edge_labels):
     # initialze Figure
     plt.figure(num=None, figsize=(100, 100), dpi=200)
     plt.axis('off')
     fig = plt.figure(1)
-    pos = nx.spring_layout(graph)
-    nx.draw_networkx_nodes(graph, pos)
-    nx.draw_networkx_edges(graph, pos)
-    nx.draw_networkx_labels(graph, pos)
-
+    nx.draw(G,pos,node_size=1200) #Uncomment this statement to generate all edges
+    nx.draw_networkx_edges(G, pos, edgelist=list(
+        zip(shortest_path, shortest_path[1:])), edge_color='r', width=5)
+   # nx.draw_networkx_nodes(G,pos) Uncomment for shortest path only
+    nx.draw_networkx_labels(graph,pos,labels,40)
+    nx.draw_networkx_edge_labels(G, pos,edge_labels,font_size = 20) #Uncomment this statement when drawing ALL paths
     cut = 1.00
     xmax = cut * max(xx for xx, yy in pos.values())
     ymax = cut * max(yy for xx, yy in pos.values())
@@ -85,6 +100,7 @@ for i in range(20):
                     G.add_edge(i, random_neighbor, distance=random.uniform(1, 15),
                                speed=SpeedList[random_neighbor])
     G.remove_edges_from(nx.selfloop_edges(G))
+    edges = G.edges()
     source = 1
     destination = 100
 
@@ -125,7 +141,11 @@ nx.draw(G, pos)
 nx.draw_networkx_edges(G, pos, edgelist=list(
     zip(shortest_path, shortest_path[1:])), edge_color='r', width=1)
 
+edge_labels = edge_label_maker(G)
+
 plt.show()
-save_graph(G, "my_graph.svg")
+save_graph(G, "my_graph.svg",pos,shortest_path,edge_labels)
+
+
 
 # Copy code
