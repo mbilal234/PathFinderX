@@ -103,6 +103,8 @@ for i in range(20):
     edges = G.edges()
     source = 1
     destination = 100
+    packetsize=500;
+    payloadsize= 450;
 
     print("Calculating shortest path")
     for i in range(5):
@@ -129,10 +131,16 @@ for i in range(20):
                     # Calculate the delay for the current edge using the distance and speed attributes
                     delay = (edge_data['distance'] / edge_data['speed'])
                     min_delay += delay
+                    headersize = packetsize-payloadsize
+                    overhead = (headersize)/payloadsize;
                 except:
                     pass
             print(
                 f"The delay from source to destination is: {min_delay:.3f} s")
+            print(
+                f"The size of a packet is: {packetsize:.3f} bytes")
+            print(
+                f"The overhead of the network is: {overhead:.3f} bytes")
         except:
             print("Connection fails")
 
