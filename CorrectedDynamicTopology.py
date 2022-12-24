@@ -103,8 +103,9 @@ for i in range(20):
     edges = G.edges()
     source = 1
     destination = 100
-    packetsize=500;
-    payloadsize= 450;
+    packetsize=500
+    payloadsize= 450
+    avgdelay=0
 
     print("Calculating shortest path")
     for i in range(5):
@@ -132,7 +133,7 @@ for i in range(20):
                     delay = (edge_data['distance'] / edge_data['speed'])
                     min_delay += delay
                     headersize = packetsize-payloadsize
-                    overhead = (headersize)/payloadsize;
+                    overhead = (headersize)/payloadsize
                 except:
                     pass
             print(
@@ -144,6 +145,9 @@ for i in range(20):
         except:
             print("Connection fails")
 
+        avgdelay+=min_delay
+        
+    print( f"The average delay of the network is: {avgdelay/5:.3f} s")
 
 nx.draw(G, pos)
 nx.draw_networkx_edges(G, pos, edgelist=list(
