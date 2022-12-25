@@ -13,11 +13,12 @@ from matplotlib import pylab
 
 
 pos = {}
+for i in range(1, 101):
+    pos[i] = (random.randint(0, 1000), random.randint(0, 1000))
 labels = {1:"Source",100:"Destination"}
 for i in range(2,99):
     labels[i] = str(i)
-for i in range(1, 101):
-    pos[i] = (random.randint(0, 1000), random.randint(0, 1000))
+
 
 def edge_label_maker(G):
     edge_labels = dict()
@@ -108,28 +109,26 @@ for i in range(20):
     avgdelay=0
 
     print("Calculating shortest path")
-    for i in range(5):
-        # Calculate the total number of paths from the source to the destination
-        try:
-            shortest_path = nx.shortest_path(G, source, destination)
-            print(f"The shortest path is: {shortest_path}")
-        except:
-            print("No path")
+    try:
+        shortest_path = nx.shortest_path(G, source, destination)
+        print(f"The shortest path is: {shortest_path}")
+    except:
+        print("No path")
 
-        # Select the optimal path
-        min_delay = 0
-        optimal_path = None
-        try:
-            num_hops = nx.shortest_path_length(G, source, destination)
-            print(f'Number of hops: {num_hops}')
+    try:
+        num_hops = nx.shortest_path_length(G, source, destination)
+        print(f'Number of hops: {num_hops}')
 
+        for i in range(5):
+            print("\nSending packet number ",i+1)
             min_delay = 0
+            optimal_path = None
+
             for i in range(num_hops):
                 try:
-                    # Get the edge data for the current edge
-                    edge_data = G.get_edge_data(
-                        shortest_path[i+1], shortest_path[i+2])
-                    # Calculate the delay for the current edge using the distance and speed attributes
+                        # Get the edge data for the current edge
+                    edge_data = G.get_edge_data(shortest_path[i+1], shortest_path[i+2])
+                        # Calculate the delay for the current edge using the distance and speed attributes
                     delay = (edge_data['distance'] / edge_data['speed'])
                     min_delay += delay
                     headersize = packetsize-payloadsize
@@ -137,16 +136,14 @@ for i in range(20):
                 except:
                     pass
             print(
-                f"The delay from source to destination is: {min_delay:.3f} s")
-            print(
-                f"The size of a packet is: {packetsize:.3f} bytes")
-            print(
-                f"The overhead of the network is: {overhead:.3f} bytes")
-        except:
-            print("Connection fails")
+                    f"The delay from source to destination of this packet is: {min_delay:.3f} s")
 
-        avgdelay+=min_delay
-        
+            avgdelay+=min_delay
+    except:
+        print("Connection fails")
+
+    print(f"\n\nThe total size of one packet is: {packetsize:.3f} bytes")
+    print(f"The overhead of the network is: {overhead:.3f} bytes")
     print( f"The average delay of the network is: {avgdelay/5:.3f} s")
 
 nx.draw(G, pos)
