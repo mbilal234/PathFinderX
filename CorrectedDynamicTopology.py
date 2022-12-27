@@ -7,7 +7,6 @@ Created on Wed Dec 21 22:18:31 2022
 
 import networkx as nx
 import random
-import math
 import matplotlib.pyplot as plt
 from matplotlib import pylab
 
@@ -34,16 +33,15 @@ def edge_label_maker(G):
     return edge_labels
 
 def save_graph(graph, file_name,pos,shortest_path,edge_labels):
-    # initialze Figure
+
     plt.figure(num=None, figsize=(100, 100), dpi=200)
     plt.axis('off')
     fig = plt.figure(1)
-    nx.draw(G,pos,node_size=1200) #Uncomment this statement to generate all edges
+    nx.draw(G,pos,node_size=1200) 
     nx.draw_networkx_edges(G, pos, edgelist=list(
         zip(shortest_path, shortest_path[1:])), edge_color='r', width=5)
-   # nx.draw_networkx_nodes(G,pos) Uncomment for shortest path only
     nx.draw_networkx_labels(graph,pos,labels,40)
-    nx.draw_networkx_edge_labels(G, pos,edge_labels,font_size = 20) #Uncomment this statement when drawing ALL paths
+    nx.draw_networkx_edge_labels(G, pos,edge_labels,font_size = 20) 
     cut = 1.00
     xmax = cut * max(xx for xx, yy in pos.values())
     ymax = cut * max(yy for xx, yy in pos.values())
@@ -62,9 +60,11 @@ SpeedList = []
 for j in range(100):
     SpeedList.append(random.uniform(6, 9))
 
+failedattempts=0
 for i in range(20):
 
     print("\nIteration number ", i+1, ":\n")
+
     # Create an empty graph
     G = nx.Graph()
 
@@ -101,6 +101,7 @@ for i in range(20):
                     G.add_edge(i, random_neighbor, distance=random.uniform(1, 15),
                                speed=SpeedList[random_neighbor])
     G.remove_edges_from(nx.selfloop_edges(G))
+
     edges = G.edges()
     source = 1
     destination = 100
@@ -108,12 +109,14 @@ for i in range(20):
     payloadsize= 450
     avgdelay=0
 
+
     print("Calculating shortest path")
     try:
-        shortest_path = nx.shortest_path(G, source, destination)
-        print(f"The shortest path is: {shortest_path}")
+        optimalpath = nx.shortest_path(G, source, destination)
+        print(f"The shortest and most optimal path is: {optimalpath}")
     except:
         print("No path")
+        failedattempts+=1
 
     try:
         num_hops = nx.shortest_path_length(G, source, destination)
@@ -122,15 +125,17 @@ for i in range(20):
         for i in range(5):
             print("\nSending packet number ",i+1)
             min_delay = 0
-            optimal_path = None
 
             for i in range(num_hops):
                 try:
-                        # Get the edge data for the current edge
-                    edge_data = G.get_edge_data(shortest_path[i+1], shortest_path[i+2])
-                        # Calculate the delay for the current edge using the distance and speed attributes
+                    # Get the edge data for the current edge
+                    edge_data = G.get_edge_data(optimalpath[i+1], optimalpath[i+2])
+
+                    # Calculate the delay for the current edge using the distance and speed attributes
                     delay = (edge_data['distance'] / edge_data['speed'])
                     min_delay += delay
+
+                    #Calculate overhead
                     headersize = packetsize-payloadsize
                     overhead = (headersize)/payloadsize
                 except:
@@ -146,14 +151,16 @@ for i in range(20):
     print(f"The overhead of the network is: {overhead:.3f} bytes")
     print( f"The average delay of the network is: {avgdelay/5:.3f} s")
 
+print(f"\n\n\nThe total number of successful attempts taken for a message to reach is:{20-failedattempts}")
+
 nx.draw(G, pos)
 nx.draw_networkx_edges(G, pos, edgelist=list(
-    zip(shortest_path, shortest_path[1:])), edge_color='r', width=1)
+    zip(optimalpath, optimalpath[1:])), edge_color='r', width=1)
 
 edge_labels = edge_label_maker(G)
 
 plt.show()
-save_graph(G, "my_graph.svg",pos,shortest_path,edge_labels)
+save_graph(G, "my_graph.svg",pos,optimalpath,edge_labels)
 
 
 
